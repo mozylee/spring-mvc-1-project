@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import practice.itemservice.domain.item.Item;
 import practice.itemservice.domain.item.ItemRepository;
 
@@ -42,10 +43,13 @@ public class BasicItemController {
     }
 
     @PostMapping("/add")
-    public String addItem(Item item) {
-        itemRepository.save(item);
+    public String addItem(Item item, RedirectAttributes redirectAttributes) {
+        Item savedItem = itemRepository.save(item);
 
-        return "basic/item";
+        redirectAttributes.addAttribute("itemId", savedItem.getId());
+        redirectAttributes.addFlashAttribute("status", true);
+
+        return "redirect:/basic/items/{itemId}";
     }
 
     @GetMapping("/{itemId}/edit")
